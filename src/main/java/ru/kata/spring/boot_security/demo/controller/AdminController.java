@@ -12,6 +12,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import java.util.Set;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
         private final UserService userService;
         private final RoleService roleService;
@@ -24,35 +25,35 @@ public class AdminController {
     }
 
 
-    @GetMapping("/users")
+    @GetMapping()
     public String index(Model model) {
         model.addAttribute("MyUser", userService.findAll());
         return "index";
     }
 
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", userService.findById(id));
         return "show";
     }
 
-    @GetMapping("/users/new")
+    @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", userService.createUser());
         model.addAttribute("listRoles", roleService.getAllRoles());
         return "new";
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     public String create(@ModelAttribute("user") User user) {
 
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/admin";
 
     }
 
-    @GetMapping("/users/{id}/edit")
+    @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
         Set<Role> roles = roleService.getAllRoles();
         model.addAttribute("user",userService.findById(id));
@@ -60,25 +61,25 @@ public class AdminController {
         return "edit";
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user) {
         userService.update(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
         userService.delete(id);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 
-    @PostMapping(("/users/new"))
+    @PostMapping("/new")
     public String createUser(@ModelAttribute("newUser") User user, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             System.out.println("Binderr");
         }
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 }
